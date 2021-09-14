@@ -40,18 +40,18 @@ main = Tk()
 main.title('Scraper')
 
 """Opmaak Tabs"""
-     
+
 # gives weight to the cells in the grid
 rows = 0
 while rows < 60:
     main.rowconfigure(rows, weight=1)
     main.columnconfigure(rows, weight=1)
     rows += 1
- 
+
 # Defines and places the notebook widget
 nb = ttk.Notebook(main)
 nb.grid(row=1, column=0, columnspan=60, rowspan=49, sticky='NESW')
- 
+
 # Adds tab 1 of the notebook
 page1 = ttk.Frame(nb)
 nb.add(page1, text='Info')
@@ -69,7 +69,7 @@ tkinter.Label(page2, text="Site",borderwidth=1 ).grid(row=1,column=1)
 ABXD0 = tkinter.Entry(page2,borderwidth=1, width =100 )
 ABXD0.grid(row=2,column=1)
 
-tkinter.Label(page2, text="Kind a tag",borderwidth=1 ).grid(row=3,column=1)
+tkinter.Label(page2, text="What kind of tag do you want? Without the '<' and '>'",borderwidth=1 ).grid(row=3,column=1)
 ABXD1 = tkinter.Entry(page2,borderwidth=1, width =100 )
 ABXD1.grid(row=4,column=1)
 
@@ -99,15 +99,12 @@ def scrape():
     """parser"""
     soup = BeautifulSoup(response.text, "html.parser")
 
-    """find all a tags
-    print(soup.findAll('a'))"""
-
     atag = soup.findAll(str(tag))
     atagtxt = ""
     utf8counter = 0 
 
     fp=open("CD.txt", "a")
-    
+
     for a in atag:
         try:
             atagtxt = atagtxt + str(a) + '\n'
@@ -119,7 +116,7 @@ def scrape():
     fp.close()
     editArea3.insert('1.0', atagtxt)
 
-    messagebox.showinfo("UTF 8 lines - faults", str(utf8counter))
+    messagebox.showinfo("Scraped", "Site is scraped with chosen tag")
 
 def scrapeTXT():
     editArea3.delete('1.0', END)
@@ -133,12 +130,11 @@ def scrapeTXT():
     """parser"""
     soup = BeautifulSoup(response.text, "html.parser")
 
-    """find all a tags
-    print(soup.findAll('a'))"""
 
     atag = soup.get_text()
 
     editArea3.insert('1.0', atag)
+    messagebox.showinfo("Tags", "View info for text")
 
 def scrapeTAGS():
     editArea3.delete('1.0', END)
@@ -157,13 +153,12 @@ def scrapeTAGS():
     for tag in soup.find_all(True):
         tagsL[str(tag.name)] = i
         i = i + 1
-    
+
     for t in tagsL:
         tags = tags + str(t) + '\n'        
-  
-    editArea3.insert('1.0', tags)
 
-"""BTACC = tkinter.Button(page1, text="Scrape me", command=scrape).grid(row=1,column=2)"""
+    editArea3.insert('1.0', tags)
+    messagebox.showinfo("Tags", "View info for all available tags on the site")
 
 """main menu"""
 main_menu = Menu(main)
@@ -181,7 +176,7 @@ main_menu.add_cascade(label="Hints", menu=text_menu)
 """submenu"""
 text_menu1 = Menu(main_menu, tearoff=False)
 """submenu"""
-text_menu1.add_command(label='Scrape me',
+text_menu1.add_command(label='Scrape site with chosen tag',
               command=scrape)
 text_menu1.add_command(label='Scrape me - text',
               command=scrapeTXT)
@@ -192,17 +187,3 @@ text_menu1.add_command(label='Scrape me - available tags',
 main_menu.add_cascade(label="Scrapers", menu=text_menu1)
 
 
-"""find a tag and download it
-one_a_tag = soup.findAll("a")[36]
-link = one_a_tag["href"]
-
-download_url = 'http://web.mta.info/developers/'+ link
-urllib.request.urlretrieve(download_url,'./'+link[link.find('/turnstile_')+1:])"""
-
-"""loop trough
-for i in range(36,len(soup.findAll('a'))+1): #'a' tags are for links
-    one_a_tag = soup.findAll('a')[i]
-    link = one_a_tag['href']
-    download_url = 'http://web.mta.info/developers/'+ link
-    urllib.request.urlretrieve(download_url,'./'+link[link.find('/turnstile_')+1:]) 
-    time.sleep(1) #pause the code for a sec"""
